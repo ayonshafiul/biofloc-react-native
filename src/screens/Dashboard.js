@@ -7,14 +7,23 @@ import {
   TouchableOpacity,
   useColorScheme,
   View,
+  Alert,
 } from 'react-native';
 
 import React, {useState, useEffect} from 'react';
 import database from '@react-native-firebase/database';
 import {firebase} from '@react-native-firebase/database';
+import firestore from '@react-native-firebase/firestore';
+const logRef = firestore().collection('logs');
+import {useStore} from '../hooks/useStore';
+import messaging from '@react-native-firebase/messaging';
 
 const Dashboard = ({navigation, route}) => {
   const [data, setData] = useState({});
+  const [chartData, setChartData] = useState([]);
+  const [chaertLabels, setChartLabels] = useState([]);
+
+  const refreshData = useStore(state => state.refreshData);
   useEffect(() => {
     const reference = firebase
       .app()
@@ -26,6 +35,20 @@ const Dashboard = ({navigation, route}) => {
       setData(snapshot.val());
     });
   }, []);
+  useEffect(() => {
+    refreshData();
+  }, []);
+
+  // subscribe to alerts when the app is in focus
+  // might be annoying if the user gets too many notifications
+
+  // useEffect(() => {
+  //   const unsubscribe = messaging().onMessage(async remoteMessage => {
+  //     Alert.alert(remoteMessage.notification.body);
+  //   });
+
+  //   return unsubscribe;
+  // }, []);
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: 'white'}}>
       <ScrollView
@@ -33,29 +56,51 @@ const Dashboard = ({navigation, route}) => {
         contentContainerStyle={{flexGrow: 1, justifyContent: 'space-evenly'}}>
         <View style={{flex: 1}}>
           <View style={styles.row}>
-            <TouchableOpacity style={styles.box} onPress={() => navigation.navigate("tds")}>
+            <TouchableOpacity
+              style={[styles.box, {flex: 2 / 3}]}
+              onPress={() => navigation.navigate('temperature')}>
+              <Text style={styles.text}>Temperature</Text>
+              <Text style={styles.textFocus}>{data.temperature} °C</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.box, {flex: 1 / 3}]}
+              onPress={() => navigation.navigate('tds')}>
               <Text style={styles.text}>TDS</Text>
               <Text style={styles.textFocus}>{data.TDS}</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.box} onPress={() => navigation.navigate("temperature")}>
-              <Text style={styles.text}>Temperature</Text>
-              <Text style={styles.textFocus}>{data.Temperature} °C</Text>
-            </TouchableOpacity>
           </View>
           <View style={styles.row}>
-            <TouchableOpacity style={styles.box} onPress={() => navigation.navigate("turbidity")}>
-              <Text style={styles.text}>Turbidity</Text>
-              <Text style={styles.textFocus}>{data.Turbidity}</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.box} onPress={() => navigation.navigate("distance")}>
-              <Text style={styles.text}>Distance</Text>
-              <Text style={styles.textFocus}>{data.distance} cm</Text>
-            </TouchableOpacity>
-          </View>
-          <View style={styles.row}>
-            <TouchableOpacity style={[styles.box, {flex: 1}]} onPress={() => navigation.navigate("ph")}>
+            <TouchableOpacity
+              style={[styles.box, {flex: 1 / 3}]}
+              onPress={() => navigation.navigate('ph')}>
               <Text style={styles.text}>pH</Text>
               <Text style={styles.textFocus}>{data.pH}</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.box, {flex: 1 / 3}]}
+              onPress={() => navigation.navigate('ph')}>
+              <Text style={styles.text}>pH</Text>
+              <Text style={styles.textFocus}>{data.pH}</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.box, {flex: 1 / 3}]}
+              onPress={() => navigation.navigate('ph')}>
+              <Text style={styles.text}>pH</Text>
+              <Text style={styles.textFocus}>{data.pH}</Text>
+            </TouchableOpacity>
+          </View>
+          <View style={styles.row}>
+            <TouchableOpacity
+              style={[styles.box, {flex: 1 / 3}]}
+              onPress={() => navigation.navigate('turbidity')}>
+              <Text style={styles.text}>Turbidity</Text>
+              <Text style={styles.textFocus}>{data.turbidity}</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.box, {flex: 2 / 3}]}
+              onPress={() => navigation.navigate('distance')}>
+              <Text style={styles.text}>Distance</Text>
+              <Text style={styles.textFocus}>{data.distance} cm</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -67,23 +112,23 @@ const Dashboard = ({navigation, route}) => {
 const styles = StyleSheet.create({
   row: {
     flex: 1,
-    padding: 5,
+    padding: 6,
     flexDirection: 'row',
   },
   box: {
-    backgroundColor: '#2e7d32',
+    backgroundColor: '#e26a00',
     flex: 1 / 2,
-    margin: 5,
-    borderRadius: 20,
+    margin: 2,
+    borderRadius: 10,
     justifyContent: 'center',
     alignItems: 'center',
     shadowColor: '#1f1f1f',
     shadowOffset: {width: 3, height: 2},
   },
   text: {
-    color: '#60ad5e',
+    color: '#1f1f1f',
     fontSize: 18,
-    fontWeight: 'bold'
+    fontWeight: 'bold',
   },
   textFocus: {
     color: 'white',
