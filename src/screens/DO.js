@@ -6,24 +6,32 @@ import {
   Text,
   useColorScheme,
   View,
-  Dimensions,
+  Dimensions
 } from 'react-native';
 
 import React, {useState, useEffect} from 'react';
-
-import {LineChart} from 'react-native-chart-kit';
 import {useStore} from '../hooks/useStore';
+import {LineChart} from 'react-native-chart-kit';
+import {Slider} from '@miblanchard/react-native-slider';
 
-const TDS = () => {
+
+const DO = () => {
   const chartData = useStore(state => state.chartData);
   const chartLabels = useStore(state => state.chartLabels);
-
+  const [sliderValue, setSliderValue] = useState(0);
   return (
-    <SafeAreaView style={{flex: 1}}>
+    <SafeAreaView>
       <ScrollView contentInsetAdjustmentBehavior="automatic">
         <View>
-          <Text style={{textAlign: 'center', fontWeight: 'bold'}}>TDS History</Text>
-
+          <Text>Dissolved Oxygen History</Text>
+          <Text>{sliderValue}</Text>
+          <Slider
+              value={sliderValue}
+              onValueChange={value => setSliderValue(value)}
+              minimumValue={0}
+              maximumValue={60}
+              step={1}
+            />
           <Chart chartLabels={chartLabels} chartData={chartData} />
         </View>
       </ScrollView>
@@ -39,7 +47,7 @@ const Chart = React.memo(({chartLabels, chartData}) => (
       labels: chartLabels,
       datasets: [
         {
-          data: chartData.map(data => data['TDS']),
+          data: chartData.map(data => data['do']),
         },
       ],
     }}
@@ -72,4 +80,4 @@ const Chart = React.memo(({chartLabels, chartData}) => (
   />
 ));
 
-export default TDS;
+export default DO;

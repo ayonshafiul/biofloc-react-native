@@ -17,13 +17,25 @@ import Turbidity from './src/screens/Turbidity.js';
 import Distance from './src/screens/Distance.js';
 import TDS from './src/screens/TDS.js';
 import PH from './src/screens/PH.js';
+import Ammonia from './src/screens/Ammonia.js';
+import DO from './src/screens/DO.js';
 
 
 const App = () => {
   const Stack = createNativeStackNavigator();
   return (
     <NavigationContainer>
-      <Stack.Navigator>
+      <Stack.Navigator
+        options={{
+          headerRight: () => (
+            <Button
+              onPress={() => alert('This is a button!')}
+              title="Refresh"
+              color="black"
+            />
+          ),
+        }}
+      >
         <Stack.Screen
           name="login"
           component={Login}
@@ -49,7 +61,7 @@ const App = () => {
         <Stack.Screen
           name="distance"
           component={Distance}
-          options={{title: 'Distance'}}
+          options={{title: 'Water Level'}}
         />
         <Stack.Screen
           name="tds"
@@ -60,6 +72,16 @@ const App = () => {
           name="ph"
           component={PH}
           options={{title: 'pH'}}
+        />
+        <Stack.Screen
+          name="ammonia"
+          component={Ammonia}
+          options={{title: 'Ammonia'}}
+        />
+        <Stack.Screen
+          name="do"
+          component={DO}
+          options={{title: 'Dissolved Oxygen'}}
         />
       </Stack.Navigator>
     </NavigationContainer>

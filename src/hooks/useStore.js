@@ -7,7 +7,7 @@ export const useStore = create(set => ({
   chartLabels: [],
   refreshData: async () => {
     try {
-      const snapshots = await logRef.orderBy('date', 'desc').limit(10).get();
+      const snapshots = await logRef.orderBy('date', 'desc').limit(5).get();
 
       const data = [];
       snapshots.forEach(snapshot => {
@@ -27,7 +27,7 @@ export const useStore = create(set => ({
           data.date['_seconds'],
           data.date['_nanoseconds'],
         ).toDate();
-        return date.getHours() + ':' + date.getMinutes();
+        return date.getHours() + ':' + date.getMinutes() + ":" + date.getSeconds();
       });
       console.log(chartLabels);
       set({chartLabels: chartLabels, chartData: data});

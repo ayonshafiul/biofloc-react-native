@@ -78,15 +78,15 @@ const Dashboard = ({navigation, route}) => {
             </TouchableOpacity>
             <TouchableOpacity
               style={[styles.box, {flex: 1 / 3}]}
-              onPress={() => navigation.navigate('ph')}>
-              <Text style={styles.text}>pH</Text>
-              <Text style={styles.textFocus}>{data.pH}</Text>
+              onPress={() => navigation.navigate('do')}>
+              <Text style={styles.text}>DO</Text>
+              <Text style={styles.textFocus}>{data.do}</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={[styles.box, {flex: 1 / 3}]}
-              onPress={() => navigation.navigate('ph')}>
-              <Text style={styles.text}>pH</Text>
-              <Text style={styles.textFocus}>{data.pH}</Text>
+              onPress={() => navigation.navigate('ammonia')}>
+              <Text style={styles.text}>Ammonia</Text>
+              <Text style={styles.textFocus}>{data.ammonia}</Text>
             </TouchableOpacity>
           </View>
           <View style={styles.row}>
@@ -99,7 +99,7 @@ const Dashboard = ({navigation, route}) => {
             <TouchableOpacity
               style={[styles.box, {flex: 2 / 3}]}
               onPress={() => navigation.navigate('distance')}>
-              <Text style={styles.text}>Distance</Text>
+              <Text style={styles.text}>Water Level</Text>
               <Text style={styles.textFocus}>{data.distance} cm</Text>
             </TouchableOpacity>
           </View>
