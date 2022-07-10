@@ -6,40 +6,38 @@ import {
   Text,
   useColorScheme,
   View,
-  Dimensions
+  Dimensions,
+  Button,
 } from 'react-native';
 
 import React, {useState, useEffect} from 'react';
 import {useStore} from '../hooks/useStore';
 import {LineChart} from 'react-native-chart-kit';
 import {Slider} from '@miblanchard/react-native-slider';
-
+import styles from '../styles/styles';
 
 const DO = () => {
+  const data = useStore(state => state.data);
   const chartData = useStore(state => state.chartData);
   const chartLabels = useStore(state => state.chartLabels);
-  const [sliderValue, setSliderValue] = useState(0);
   return (
     <SafeAreaView>
-      <ScrollView contentInsetAdjustmentBehavior="automatic">
-        <View>
-          <Text>Dissolved Oxygen History</Text>
-          <Text>{sliderValue}</Text>
-          <Slider
-              value={sliderValue}
-              onValueChange={value => setSliderValue(value)}
-              minimumValue={0}
-              maximumValue={60}
-              step={1}
-            />
-          <Chart chartLabels={chartLabels} chartData={chartData} />
+      <View>
+        <Text style={styles.textHeader}>Current DO: {data.do}</Text>
+          <Text style={styles.textSubHeader}>Dissolved Oxygen History</Text>
         </View>
+      <ScrollView 
+        contentInsetAdjustmentBehavior="automatic"
+        horizontal={true}
+        showsHorizontalScrollIndicator={false}
+        >
+        
+          <Chart chartLabels={chartLabels} chartData={chartData} />
       </ScrollView>
     </SafeAreaView>
   );
 };
 
-const styles = StyleSheet.create({});
 
 const Chart = React.memo(({chartLabels, chartData}) => (
   <LineChart
@@ -51,7 +49,7 @@ const Chart = React.memo(({chartLabels, chartData}) => (
         },
       ],
     }}
-    width={Dimensions.get('window').width} // from react-native
+    width={Dimensions.get('window').width + Dimensions.get('window').width} // from react-native
     height={220}
     yAxisLabel=""
     yAxisSuffix=""

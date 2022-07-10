@@ -3,11 +3,12 @@ import firestore from '@react-native-firebase/firestore';
 const logRef = firestore().collection('logs');
 
 export const useStore = create(set => ({
+  data: {},
   chartData: [],
   chartLabels: [],
-  refreshData: async () => {
+  refreshChartData: async () => {
     try {
-      const snapshots = await logRef.orderBy('date', 'desc').limit(5).get();
+      const snapshots = await logRef.orderBy('date', 'desc').limit(10).get();
 
       const data = [];
       snapshots.forEach(snapshot => {

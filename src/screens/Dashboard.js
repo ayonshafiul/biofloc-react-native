@@ -9,6 +9,7 @@ import {
   View,
   Alert,
 } from 'react-native';
+import styles from '../styles/styles';
 
 import React, {useState, useEffect} from 'react';
 import database from '@react-native-firebase/database';
@@ -19,11 +20,10 @@ import {useStore} from '../hooks/useStore';
 import messaging from '@react-native-firebase/messaging';
 
 const Dashboard = ({navigation, route}) => {
-  const [data, setData] = useState({});
-  const [chartData, setChartData] = useState([]);
-  const [chaertLabels, setChartLabels] = useState([]);
+  const data = useStore(state => state.data);
+  const refreshChartData = useStore.getState().refreshChartData;
 
-  const refreshData = useStore(state => state.refreshData);
+  // set realtime updates for values
   useEffect(() => {
     const reference = firebase
       .app()
@@ -32,11 +32,13 @@ const Dashboard = ({navigation, route}) => {
       )
       .ref('test');
     reference.on('value', snapshot => {
-      setData(snapshot.val());
+      useStore.setState({data: snapshot.val()})
     });
   }, []);
+
+  // refresh chart Data on initial load
   useEffect(() => {
-    refreshData();
+    refreshChartData();
   }, []);
 
   // subscribe to alerts when the app is in focus
@@ -60,7 +62,7 @@ const Dashboard = ({navigation, route}) => {
               style={[styles.box, {flex: 2 / 3}]}
               onPress={() => navigation.navigate('temperature')}>
               <Text style={styles.text}>Temperature</Text>
-              <Text style={styles.textFocus}>{data.temperature} °C</Text>
+              <Text style={styles.textFocus}>{data.temperature} °c</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={[styles.box, {flex: 1 / 3}]}
@@ -108,33 +110,5 @@ const Dashboard = ({navigation, route}) => {
     </SafeAreaView>
   );
 };
-
-const styles = StyleSheet.create({
-  row: {
-    flex: 1,
-    padding: 6,
-    flexDirection: 'row',
-  },
-  box: {
-    backgroundColor: '#e26a00',
-    flex: 1 / 2,
-    margin: 2,
-    borderRadius: 10,
-    justifyContent: 'center',
-    alignItems: 'center',
-    shadowColor: '#1f1f1f',
-    shadowOffset: {width: 3, height: 2},
-  },
-  text: {
-    color: '#1f1f1f',
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
-  textFocus: {
-    color: 'white',
-    marginTop: 10,
-    fontSize: 24,
-  },
-});
 
 export default Dashboard;

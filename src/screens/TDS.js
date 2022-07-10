@@ -10,28 +10,31 @@ import {
 } from 'react-native';
 
 import React, {useState, useEffect} from 'react';
-
 import {LineChart} from 'react-native-chart-kit';
 import {useStore} from '../hooks/useStore';
+import styles from '../styles/styles';
 
 const TDS = () => {
+  const data = useStore(state => state.data);
   const chartData = useStore(state => state.chartData);
   const chartLabels = useStore(state => state.chartLabels);
 
   return (
     <SafeAreaView style={{flex: 1}}>
-      <ScrollView contentInsetAdjustmentBehavior="automatic">
-        <View>
-          <Text style={{textAlign: 'center', fontWeight: 'bold'}}>TDS History</Text>
-
+      <View>
+        <Text style={styles.textHeader}>Current TDS: {data.TDS}</Text>
+        <Text style={styles.textSubHeader}>TDS History</Text>
+      </View>
+      <ScrollView 
+        contentInsetAdjustmentBehavior="automatic"
+        horizontal={true}
+        showsHorizontalScrollIndicator={true}
+        >
           <Chart chartLabels={chartLabels} chartData={chartData} />
-        </View>
       </ScrollView>
     </SafeAreaView>
   );
 };
-
-const styles = StyleSheet.create({});
 
 const Chart = React.memo(({chartLabels, chartData}) => (
   <LineChart
@@ -43,7 +46,7 @@ const Chart = React.memo(({chartLabels, chartData}) => (
         },
       ],
     }}
-    width={Dimensions.get('window').width} // from react-native
+    width={Dimensions.get('window').width + Dimensions.get('window').width} // from react-native
     height={220}
     yAxisLabel=""
     yAxisSuffix=""

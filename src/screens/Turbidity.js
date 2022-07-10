@@ -12,16 +12,31 @@ import {
 import React, {useState, useEffect} from 'react';
 import {useStore} from '../hooks/useStore';
 import {LineChart} from 'react-native-chart-kit';
+import styles from '../styles/styles';
 
 const Turbidity = () => {
+  const data = useStore(state => state.data);
   const chartData = useStore(state => state.chartData);
   const chartLabels = useStore(state => state.chartLabels);
   return (
     <SafeAreaView>
-      <ScrollView contentInsetAdjustmentBehavior="automatic">
         <View>
-          <Text>Turbidity History</Text>
-          <LineChart
+          <Text style={styles.textHeader}>Current Turbidity: {data.turbidity}</Text> 
+          <Text style={styles.textSubHeader}>Turbidity History</Text>
+        </View>
+      <ScrollView 
+        contentInsetAdjustmentBehavior="automatic"
+        horizontal={true}
+        showsHorizontalScrollIndicator={false}
+        >
+          <Chart chartData={chartData} chartLabels={chartLabels} />
+      </ScrollView>
+    </SafeAreaView>
+  );
+};
+
+const Chart = React.memo(({chartData, chartLabels}) => {
+  return (<LineChart
             data={{
               labels: chartLabels,
               datasets: [
@@ -30,7 +45,7 @@ const Turbidity = () => {
                 },
               ],
             }}
-            width={Dimensions.get('window').width} // from react-native
+            width={Dimensions.get('window').width + Dimensions.get('window').width} // from react-native
             height={220}
             yAxisLabel=""
             yAxisSuffix=""
@@ -57,12 +72,7 @@ const Turbidity = () => {
               borderRadius: 16,
             }}
           />
-        </View>
-      </ScrollView>
-    </SafeAreaView>
-  );
-};
-
-const styles = StyleSheet.create({});
+  )
+})
 
 export default Turbidity;
