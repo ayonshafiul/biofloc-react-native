@@ -12,6 +12,7 @@ import {
 } from 'react-native';
 
 import React, {useState, useEffect} from 'react';
+import {firebase} from '@react-native-firebase/database';
 import {LineChart} from 'react-native-chart-kit';
 import {useStore} from '../hooks/useStore';
 import {Slider} from '@miblanchard/react-native-slider';
@@ -22,7 +23,7 @@ const Temperature = () => {
   const data = useStore(state => state.data);
   const chartData = useStore(state => state.chartData);
   const chartLabels = useStore(state => state.chartLabels);
-  const [sliderValue, setSliderValue] = useState(0);
+  const [sliderValue, setSliderValue] = useState([data["temperature_target"]]);
   const refreshChartData = useStore(state => state.refreshChartData);
   const [refreshing, setRefreshing] = React.useState(false);
   const onRefresh = React.useCallback(async () => {
@@ -51,7 +52,17 @@ const Temperature = () => {
             maximumValue={50}
             step={1}
           />
-          <Button title="Set Value" onPress={() => {}} />
+          <Button title="Set Value" onPress={() => {
+            const reference = firebase
+            .app()
+            .database(
+              'https://biofloc-automation-default-rtdb.asia-southeast1.firebasedatabase.app',
+            )
+            .ref('test');
+            reference.update({
+              "temperature_target": sliderValue[0]
+            })
+          }} />
           <View style={styles.statusWrapper}>
             <Text style={styles.statusText}>Heater Status: </Text>
             <Switch value={data['heater_status']} onValueChange={() => {}} />

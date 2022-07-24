@@ -12,6 +12,7 @@ import {
 } from 'react-native';
 
 import React, {useState, useEffect} from 'react';
+import {firebase} from '@react-native-firebase/database';
 import {useStore} from '../hooks/useStore';
 import {LineChart} from 'react-native-chart-kit';
 import {Slider} from '@miblanchard/react-native-slider';
@@ -23,7 +24,7 @@ const DO = () => {
   const data = useStore(state => state.data);
   const chartData = useStore(state => state.chartData);
   const chartLabels = useStore(state => state.chartLabels);
-  const [sliderValue, setSliderValue] = useState(0);
+  const [sliderValue, setSliderValue] = useState([data["do_target"]]);
 
   
   const refreshChartData = useStore(state => state.refreshChartData);
@@ -54,7 +55,17 @@ const DO = () => {
             maximumValue={20}
             step={1}
           />
-          <Button title="Set Value" onPress={() => {}} />
+          <Button title="Set Value" onPress={() => {
+            const reference = firebase
+            .app()
+            .database(
+              'https://biofloc-automation-default-rtdb.asia-southeast1.firebasedatabase.app',
+            )
+            .ref('test');
+            reference.update({
+              "do_target": sliderValue[0]
+            })
+          }} />
           <View style={styles.statusWrapper}>
             <Text style={styles.statusText}>Air Pump Status: </Text>
             <Switch value={data['air_pump_status']} onValueChange={() => {}} />

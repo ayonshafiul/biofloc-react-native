@@ -34,7 +34,12 @@ const Ammonia = () => {
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }>
         <View>
-          <Text style={styles.textHeader}>Current Ammonia: {data.ammonia}</Text>
+          <Text style={styles.textHeader}>
+            Current Ammonia:{' '}
+            {(Math.pow(10, Number(data.pH)) /
+              (Math.exp(6344 / (273 + Number(data.temperature))) +
+                Math.pow(10, Number(data.pH)))).toFixed(2)}
+          </Text>
           <Text style={styles.textSubHeader}>Ammonia History</Text>
         </View>
         <ScrollView

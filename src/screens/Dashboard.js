@@ -22,6 +22,7 @@ import messaging from '@react-native-firebase/messaging';
 const Dashboard = ({navigation, route}) => {
   const data = useStore(state => state.data);
   const refreshChartData = useStore.getState().refreshChartData;
+  const chartData = useStore.getState().chartData;
 
   // set realtime updates for values
   useEffect(() => {
@@ -32,7 +33,7 @@ const Dashboard = ({navigation, route}) => {
       )
       .ref('test');
     reference.on('value', snapshot => {
-      useStore.setState({data: snapshot.val()})
+      useStore.setState({data: snapshot.val()});
     });
   }, []);
 
@@ -88,7 +89,11 @@ const Dashboard = ({navigation, route}) => {
               style={[styles.box, {flex: 1 / 3}]}
               onPress={() => navigation.navigate('ammonia')}>
               <Text style={styles.text}>Ammonia</Text>
-              <Text style={styles.textFocus}>{data.ammonia}</Text>
+              <Text style={styles.textFocus}>
+                {(Math.pow(10, Number(data.pH)) /
+                  (Math.exp(6344 / (273 + Number(data.temperature))) +
+                    Math.pow(10, Number(data.pH)))).toFixed(2)}
+              </Text>
             </TouchableOpacity>
           </View>
           <View style={styles.row}>

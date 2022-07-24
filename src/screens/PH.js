@@ -13,6 +13,7 @@ import {
 } from 'react-native';
 
 import React, {useState, useEffect} from 'react';
+import {firebase} from '@react-native-firebase/database';
 import {useStore} from '../hooks/useStore';
 import {LineChart} from 'react-native-chart-kit';
 import {Slider} from '@miblanchard/react-native-slider';
@@ -23,7 +24,7 @@ const PH = () => {
   const data = useStore(state => state.data);
   const chartData = useStore(state => state.chartData);
   const chartLabels = useStore(state => state.chartLabels);
-  const [sliderValue, setSliderValue] = useState(0);
+  const [sliderValue, setSliderValue] = useState([data["pH_target"]]);
 
   const refreshChartData = useStore(state => state.refreshChartData);
   const [refreshing, setRefreshing] = React.useState(false);
@@ -52,17 +53,30 @@ const PH = () => {
           <Button
             title="Set Value"
             onPress={() => {
-              Alert.alert('Clicked', 'Hello');
-              console.log('Clicked');
+              const reference = firebase
+                .app()
+                .database(
+                  'https://biofloc-automation-default-rtdb.asia-southeast1.firebasedatabase.app',
+                )
+                .ref('test');
+                reference.update({
+                  "pH_target": sliderValue[0]
+                })
             }}
           />
           <View style={styles.statusWrapper}>
-            <Text style={styles.statusText}>Acid</Text>
-            <Switch value={data['acid_compound_status']} onValueChange={() => {}} />
+            <Text style={styles.statusText}>Acid Compound </Text>
+            <Switch
+              value={data['acid_compound_status']}
+              onValueChange={() => {}}
+            />
           </View>
           <View style={styles.statusWrapper}>
-            <Text style={styles.statusText}>Alcali</Text>
-            <Switch value={data['alcali_compound_status']} onValueChange={() => {}} />
+            <Text style={styles.statusText}>Alcali Compound </Text>
+            <Switch
+              value={data['alcali_compound_status']}
+              onValueChange={() => {}}
+            />
           </View>
           <Text style={styles.textSubHeader}>pH History</Text>
         </View>
