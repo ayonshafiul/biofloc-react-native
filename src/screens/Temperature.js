@@ -7,7 +7,8 @@ import {
   useColorScheme,
   View,
   Dimensions,
-  Button
+  Button,
+  RefreshControl,
 } from 'react-native';
 
 import React, {useState, useEffect} from 'react';
@@ -15,35 +16,55 @@ import {LineChart} from 'react-native-chart-kit';
 import {useStore} from '../hooks/useStore';
 import {Slider} from '@miblanchard/react-native-slider';
 import styles from '../styles/styles';
+import {Switch} from '@react-native-material/core';
 
 const Temperature = () => {
   const data = useStore(state => state.data);
   const chartData = useStore(state => state.chartData);
   const chartLabels = useStore(state => state.chartLabels);
   const [sliderValue, setSliderValue] = useState(0);
+  const refreshChartData = useStore(state => state.refreshChartData);
+  const [refreshing, setRefreshing] = React.useState(false);
+  const onRefresh = React.useCallback(async () => {
+    setRefreshing(true);
+    await refreshChartData();
+    setRefreshing(false);
+  }, []);
   return (
     <SafeAreaView>
-      
-          <View
-            style={styles.viewContainer}>
-          <Text style={styles.textHeader}>Current Temperature: {data.temperature}°c</Text>
-            <Text style={styles.textSubHeader}>Set temperature value: {sliderValue}</Text>
-            <Slider
-              value={sliderValue}
-              onValueChange={value => setSliderValue(value)}
-              minimumValue={0}
-              maximumValue={100}
-              step={1}
-            />
-            <Button title="Set Value" onPress={() => {}} />
-            <Text style={styles.textSubHeader}>Temperature History</Text>
+      <ScrollView
+        contentInsetAdjustmentBehavior="automatic"
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }>
+        <View style={styles.viewContainer}>
+          <Text style={styles.textHeader}>
+            Current Temperature: {data.temperature}°c
+          </Text>
+          <Text style={styles.textSubHeader}>
+            Set temperature value: {sliderValue}
+          </Text>
+          <Slider
+            value={sliderValue}
+            onValueChange={value => setSliderValue(value)}
+            minimumValue={0}
+            maximumValue={50}
+            step={1}
+          />
+          <Button title="Set Value" onPress={() => {}} />
+          <View style={styles.statusWrapper}>
+            <Text style={styles.statusText}>Heater Status: </Text>
+            <Switch value={data['heater_status']} onValueChange={() => {}} />
           </View>
-        
-      <ScrollView contentInsetAdjustmentBehavior="automatic" 
-        horizontal={true}
-        showsHorizontalScrollIndicator={false}
-        >
-            <Chart chartLabels={chartLabels} chartData={chartData} />
+          <Text style={styles.textSubHeader}>Temperature History</Text>
+        </View>
+
+        <ScrollView
+          contentInsetAdjustmentBehavior="automatic"
+          horizontal={true}
+          showsHorizontalScrollIndicator={false}>
+          <Chart chartLabels={chartLabels} chartData={chartData} />
+        </ScrollView>
       </ScrollView>
     </SafeAreaView>
   );
@@ -59,7 +80,7 @@ const Chart = React.memo(({chartLabels, chartData}) => (
         },
       ],
     }}
-    width={Dimensions.get('window').width + Dimensions.get('window').width } // from react-native
+    width={Dimensions.get('window').width + Dimensions.get('window').width} // from react-native
     height={220}
     yAxisLabel=""
     yAxisSuffix=""

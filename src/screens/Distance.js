@@ -7,8 +7,9 @@ import {
   useColorScheme,
   View,
   Dimensions,
-  Button, 
-  Alert
+  Button,
+  Alert,
+  RefreshControl,
 } from 'react-native';
 
 import React, {useState, useEffect} from 'react';
@@ -16,41 +17,73 @@ import {useStore} from '../hooks/useStore';
 import {LineChart} from 'react-native-chart-kit';
 import {Slider} from '@miblanchard/react-native-slider';
 import styles from '../styles/styles';
-
+import {Switch} from '@react-native-material/core';
 
 const Distance = () => {
   const data = useStore(state => state.data);
   const chartData = useStore(state => state.chartData);
   const chartLabels = useStore(state => state.chartLabels);
   const [sliderValue, setSliderValue] = useState(0);
+
+  const refreshChartData = useStore(state => state.refreshChartData);
+  const [refreshing, setRefreshing] = React.useState(false);
+  const onRefresh = React.useCallback(async () => {
+    setRefreshing(true);
+    await refreshChartData();
+    setRefreshing(false);
+  }, []);
   return (
     <SafeAreaView>
-       <View style={styles.viewContainer}>
-
-          <Text style={styles.textHeader}>Current Water Level: {data.distance}</Text>  
-          <Text style={styles.textSubHeader}>Set Water Level: {sliderValue}</Text>
+      <ScrollView
+        contentInsetAdjustmentBehavior="automatic"
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }>
+        <View style={styles.viewContainer}>
+          <Text style={styles.textHeader}>
+            Current Water Level: {data.distance}
+          </Text>
+          <Text style={styles.textSubHeader}>
+            Set Water Level: {sliderValue}
+          </Text>
           <Slider
-              value={sliderValue}
-              onValueChange={value => setSliderValue(value)}
-              minimumValue={0}
-              maximumValue={60}
-              step={1}
+            value={sliderValue}
+            onValueChange={value => setSliderValue(value)}
+            minimumValue={0}
+            maximumValue={100}
+            step={1}
+          />
+          <Button
+            title="Set Value"
+            onPress={() => {
+              Alert.alert('Clicked', 'Hello');
+              console.log('Clicked');
+            }}
+          />
+          <View style={styles.statusWrapper}>
+            <Text style={styles.statusText}>Water Pump: </Text>
+            <Switch
+              value={data['water_pump_status']}
+              onValueChange={() => {}}
             />
-          <Button title='Set Value' onPress={() => {Alert.alert("Clicked", "Hello"); console.log("Clicked")}}/>
+          </View>
+
+          <View style={styles.statusWrapper}>
+            <Text style={styles.statusText}>Drainage: </Text>
+            <Switch value={data['drainage_status']} onValueChange={() => {}} />
+          </View>
           <Text style={styles.textSubHeader}>Water Level History</Text>
         </View>
-      <ScrollView 
-        contentInsetAdjustmentBehavior="automatic"
-        horizontal={true}
-        showsHorizontalScrollIndicator={false}
-        >
-        <Chart chartLabels={chartLabels} chartData={chartData} />
+        <ScrollView
+          contentInsetAdjustmentBehavior="automatic"
+          horizontal={true}
+          showsHorizontalScrollIndicator={false}>
+          <Chart chartLabels={chartLabels} chartData={chartData} />
+        </ScrollView>
       </ScrollView>
     </SafeAreaView>
   );
 };
-
-
 
 const Chart = React.memo(({chartLabels, chartData}) => (
   <LineChart

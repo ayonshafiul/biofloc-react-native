@@ -68,7 +68,7 @@ const Dashboard = ({navigation, route}) => {
               style={[styles.box, {flex: 1 / 3}]}
               onPress={() => navigation.navigate('tds')}>
               <Text style={styles.text}>TDS</Text>
-              <Text style={styles.textFocus}>{data.TDS}</Text>
+              <Text style={styles.textFocus}>{data.tds}</Text>
             </TouchableOpacity>
           </View>
           <View style={styles.row}>
@@ -82,7 +82,7 @@ const Dashboard = ({navigation, route}) => {
               style={[styles.box, {flex: 1 / 3}]}
               onPress={() => navigation.navigate('do')}>
               <Text style={styles.text}>DO</Text>
-              <Text style={styles.textFocus}>{data.do}</Text>
+              <Text style={styles.textFocus}>{data.do} mg/L</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={[styles.box, {flex: 1 / 3}]}
