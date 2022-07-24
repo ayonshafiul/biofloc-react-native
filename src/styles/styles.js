@@ -35,12 +35,14 @@ export default StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 18,
     marginTop: 10,
+    color: 'black'
   },
   textHeader: {
     textAlign: 'center',
     fontWeight: 'bold',
     fontSize: 24,
     marginTop: 10,
+    color: 'black'
   },
   textLeft: {
     textAlign: 'left',
@@ -56,5 +58,6 @@ export default StyleSheet.create({
   statusText: {
     fontSize: 18,
     fontWeight: 'bold',
+    color: 'black'
   },
 });
